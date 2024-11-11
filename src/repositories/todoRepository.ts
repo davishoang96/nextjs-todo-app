@@ -8,6 +8,11 @@ export interface CreateTaskData {
     completed?: boolean;
 }
 
+export interface UpdateTaskData {
+    title?: string;
+    completed?: boolean;
+}
+
 export const TodoRepository = {
     async createTask(data: CreateTaskData): Promise<Task> {
         const newTask = await prisma.task.create({
@@ -28,5 +33,13 @@ export const TodoRepository = {
             where: { id },
         });
         return id; // Return the ID of the deleted task
+    },
+
+    async updateTask(id: number, data: UpdateTaskData): Promise<Task> {
+        const updatedTask = await prisma.task.update({
+            where: { id },
+            data,
+        });
+        return updatedTask;
     },
 };

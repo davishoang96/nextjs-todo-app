@@ -1,6 +1,7 @@
 import {
     TodoRepository,
     CreateTaskData,
+    UpdateTaskData
 } from "../src/repositories/todoRepository";
 
 import { PrismaClient } from "@prisma/client";
@@ -11,6 +12,7 @@ jest.mock("@prisma/client", () => {
     const mPrismaClient = {
         task: {
             create: jest.fn(),
+            update: jest.fn(),
             findMany: jest.fn(),
             delete: jest.fn(),
             deleteMany: jest.fn(),
@@ -27,9 +29,13 @@ describe("TodoRepository", () => {
         { id: 2, title: "Test Task 2", completed: true },
     ];
 
+    const mockUpdateData: UpdateTaskData = { title: "Updated Task" };
+    const mockUpdatedTask = { id: 1, title: "Updated Task", completed: false };
+
     beforeEach(() => {
         (prisma.task.create as jest.Mock).mockResolvedValue(mockTask);
         (prisma.task.findMany as jest.Mock).mockResolvedValue(mockTasks);
+        (prisma.task.update as jest.Mock).mockResolvedValue(mockUpdatedTask);
     });
 
     afterEach(() => {
@@ -78,6 +84,49 @@ describe("TodoRepository", () => {
             } catch (error) {
                 expect(error).toEqual(new Error("Task not found"));
             }
+        });
+    });
+
+    describe("updateTask", () => {
+        it("should update an existing task", async () => {
+            const taskId = 1;
+            const result = await TodoRepository.updateTask(taskId, mockUpdateData);
+
+            expect(prisma.task.update).toHaveBeenCalledWith({
+                where: { id: taskId },
+                data: mockUpdateData,
+            });
+
+            expect(result).toEqual(mockUpdatedTask); // Verifying the updated task returned
+        });
+
+        it("should throw an error if task ID does not exist", async () => {
+            const taskId = 999;
+            (prisma.task.update as jest.Mock).mockRejectedValue(
+                new Error("Task not found")
+            );
+
+            try {
+                await TodoRepository.updateTask(taskId, mockUpdateData);
+            } catch (error) {
+                expect(error).toEqual(new Error("Task not found"));
+            }
+        });
+
+        it("should handle partial updates (e.g., only completed field)", async () => {
+            const partialUpdateData = { completed: true };
+            const taskId = 1;
+            const updatedTask = { id: 1, title: "Test Task", completed: true };
+
+            (prisma.task.update as jest.Mock).mockResolvedValue(updatedTask);
+
+            const result = await TodoRepository.updateTask(taskId, partialUpdateData);
+
+            expect(prisma.task.update).toHaveBeenCalledWith({
+                where: { id: taskId },
+                data: partialUpdateData,
+            });
+            expect(result).toEqual(updatedTask);
         });
     });
 });
