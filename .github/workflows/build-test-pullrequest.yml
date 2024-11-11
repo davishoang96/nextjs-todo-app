@@ -1,4 +1,4 @@
-name: pull request validation 
+name: pull request validation
 
 on:
   pull_request:
@@ -20,13 +20,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Ensure this matches your project's Node.js version
+          node-version: "18" # Ensure this matches your project's Node.js version
 
       - name: Install dependencies
         run: npm install
 
       - name: Build project
         run: npm run build
-      
-      # - name: Run unit tests
-      #   run: npm test
+
+      - name: Run unit tests
+        run: npx jest
