@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { Task } from "@prisma/client";
 
-const CreateTaskForm = () => {
+interface CreateTaskFormProps {
+    addTask: (newTask: Task) => void;
+}
+
+const CreateTaskForm = ({ addTask }: CreateTaskFormProps) => {
     const [title, setTitle] = useState('');
     const [completed, setCompleted] = useState(false);
     const [message, setMessage] = useState('');
@@ -19,6 +24,7 @@ const CreateTaskForm = () => {
 
         const result = await response.json();
         if (response.ok) {
+            addTask(result);  // Pass the new task to the parent component
             setMessage('Task created successfully!');
         } else {
             setMessage(`Error: ${result.error}`);
