@@ -9,6 +9,7 @@ export interface CreateTaskData {
 }
 
 export const TodoRepository = {
+    
   async createTask(data: CreateTaskData): Promise<Task> {
     const newTask = await prisma.task.create({
       data: {
@@ -21,5 +22,12 @@ export const TodoRepository = {
 
   async getAllTasks(): Promise<Task[]> {
     return await prisma.task.findMany();
+  },
+
+  async deleteTask(id: number): Promise<number> {
+    await prisma.task.delete({
+      where: { id },
+    });
+    return id; // Return the ID of the deleted task
   },
 };
