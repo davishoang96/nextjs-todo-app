@@ -28,5 +28,5 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # - name: Run unit tests
-      #   run: npm test
+      - name: Run unit tests
+        run: npx jest
