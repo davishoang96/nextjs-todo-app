@@ -32,7 +32,7 @@ export const TodoRepository = {
         await prisma.task.delete({
             where: { id },
         });
-        return id; // Return the ID of the deleted task
+        return id;
     },
 
     async updateTask(id: number, data: UpdateTaskData): Promise<Task> {
@@ -41,5 +41,10 @@ export const TodoRepository = {
             data,
         });
         return updatedTask;
+    },
+
+    async deleteAllTasks(): Promise<number> {
+        const result = await prisma.task.deleteMany({});
+        return result.count;
     },
 };

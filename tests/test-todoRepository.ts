@@ -36,6 +36,7 @@ describe("TodoRepository", () => {
         (prisma.task.create as jest.Mock).mockResolvedValue(mockTask);
         (prisma.task.findMany as jest.Mock).mockResolvedValue(mockTasks);
         (prisma.task.update as jest.Mock).mockResolvedValue(mockUpdatedTask);
+        (prisma.task.deleteMany as jest.Mock).mockResolvedValue({ count: 2 });
     });
 
     afterEach(() => {
@@ -84,6 +85,24 @@ describe("TodoRepository", () => {
             } catch (error) {
                 expect(error).toEqual(new Error("Task not found"));
             }
+        });
+    });
+
+    describe("deleteAllTasks", () => {
+        it("should delete all tasks and return the number of tasks deleted", async () => {
+            const result = await TodoRepository.deleteAllTasks();
+
+            expect(prisma.task.deleteMany).toHaveBeenCalledWith({});
+            expect(result).toBe(2); // Verifying the number of tasks deleted
+        });
+
+        it("should return 0 if no tasks are found", async () => {
+            (prisma.task.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
+
+            const result = await TodoRepository.deleteAllTasks();
+
+            expect(prisma.task.deleteMany).toHaveBeenCalledWith({});
+            expect(result).toBe(0); // Verifying that no tasks were deleted
         });
     });
 
