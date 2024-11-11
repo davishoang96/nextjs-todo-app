@@ -18,4 +18,8 @@ export const TodoRepository = {
     });
     return newTask;
   },
+
+  async getAllTasks(): Promise<Task[]> {
+    return await prisma.task.findMany();
+  },
 };
