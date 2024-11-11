@@ -19,19 +19,39 @@ jest.mock("@prisma/client", () => {
 });
 
 describe("TodoRepository", () => {
-  describe("createTask", () => {
-    it("should create a new task", async () => {
-      const mockData: CreateTaskData = { title: "Test Task" };
-      const mockTodo = { id: 1, title: "Test Task", completed: false };
-
-      (prisma.task.create as jest.Mock).mockResolvedValue(mockTodo);
-
-      const result = await TodoRepository.createTask(mockData);
-
-      expect(prisma.task.create).toHaveBeenCalledWith({
-        data: { title: "Test Task", completed: false },
+    const mockData: CreateTaskData = { title: "Test Task" };
+    const mockTask = { id: 1, title: "Test Task", completed: false };
+    const mockTasks = [
+      { id: 1, title: "Test Task 1", completed: false },
+      { id: 2, title: "Test Task 2", completed: true },
+    ];
+  
+    beforeEach(() => {
+      (prisma.task.create as jest.Mock).mockResolvedValue(mockTask);
+      (prisma.task.findMany as jest.Mock).mockResolvedValue(mockTasks);
+    });
+  
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+  
+    describe("createTask", () => {
+      it("should create a new task", async () => {
+        const result = await TodoRepository.createTask(mockData);
+  
+        expect(prisma.task.create).toHaveBeenCalledWith({
+          data: { title: mockData.title, completed: false },
+        });
+        expect(result).toEqual(mockTask);
       });
-      expect(result).toEqual(mockTodo);
+    });
+  
+    describe("getAllTasks", () => {
+      it("should return all tasks", async () => {
+        const result = await TodoRepository.getAllTasks();
+  
+        expect(prisma.task.findMany).toHaveBeenCalled();
+        expect(result).toEqual(mockTasks);
+      });
     });
   });
-});
