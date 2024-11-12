@@ -4,6 +4,7 @@ interface Task {
 	id: number;
 	title: string;
 	completed: boolean;
+	createdAt: Date;
 }
 
 interface ListAllTaskProps {

@@ -35,8 +35,6 @@ const TaskManagement = () => {
 		});
 
 		if (response.ok) {
-			const data = await response.json();
-			alert(data.numOfTask); // Show the message with the count of deleted tasks
 			setTasks([]); // Clear the task list in the state
 		} else {
 			alert("Error deleting tasks");
