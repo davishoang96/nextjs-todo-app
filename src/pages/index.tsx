@@ -28,10 +28,7 @@ const TaskManagement = () => {
 		});
 
 		if (response.ok) {
-			const data = await response.json();
-
-			alert(data.numOfTask); // Show the message with the count of deleted tasks
-
+			// alert(data.numOfTask);
 			// Refetch the tasks to update the list
 			setTasks([]);
 		} else {
