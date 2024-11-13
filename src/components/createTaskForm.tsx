@@ -7,7 +7,6 @@ interface CreateTaskFormProps {
 
 const CreateTaskForm = ({ addTask }: CreateTaskFormProps) => {
     const [title, setTitle] = useState('');
-    const [completed, setCompleted] = useState(false);
     const [message, setMessage] = useState('');
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -19,15 +18,13 @@ const CreateTaskForm = ({ addTask }: CreateTaskFormProps) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ title, completed }),
+            body: JSON.stringify({ title }),
         });
 
         const result = await response.json();
         if (response.ok) {
             addTask(result);  // Pass the new task to the parent component
             setMessage('Task created successfully!');
-            setTitle("");
-            setCompleted(false);
         } else {
             setMessage(`Error: ${result.error}`);
         }
@@ -48,18 +45,6 @@ const CreateTaskForm = ({ addTask }: CreateTaskFormProps) => {
                         required
                     />
                 </div>
-
-                <div className="form-check mb-3">
-                    <input
-                        id="completed"
-                        type="checkbox"
-                        checked={completed}
-                        onChange={(e) => setCompleted(e.target.checked)}
-                        className="form-check-input"
-                    />
-                    <label htmlFor="completed" className="form-check-label">Completed</label>
-                </div>
-
                 <button type="submit" className="btn btn-primary">
                     Create Task
                 </button>
