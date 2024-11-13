@@ -22,18 +22,20 @@ const TaskManagement = () => {
 		setTasks((prevTasks) => [...prevTasks, newTask]);
 	};
 
+	// Function to update an existing task in the list
+	const updateTask = (updatedTask: Task) => {
+		setTasks((prevTasks) =>
+			prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+		);
+	};
+
 	const deleteAllTasks = async () => {
 		const response = await fetch("/api/deleteAllTasks", {
 			method: "DELETE",
 		});
 
 		if (response.ok) {
-			const data = await response.json();
-
-			alert(data.numOfTask); // Show the message with the count of deleted tasks
-
-			// Refetch the tasks to update the list
-			setTasks([]);
+			setTasks([]); // Clear the task list in the state
 		} else {
 			alert("Error deleting tasks");
 		}
@@ -42,11 +44,11 @@ const TaskManagement = () => {
 	return (
 		<div className="container mt-5">
 			<h1>Task Management</h1>
-			<ListAllTask tasks={tasks} />
+			<ListAllTask tasks={tasks} onTaskUpdate={updateTask} />
 			<CreateTaskForm addTask={addTask} />
-      <button className="btn btn-danger mt-3" onClick={deleteAllTasks}>
-        Purge Database
-      </button>
+			<button className="btn btn-danger mt-3" onClick={deleteAllTasks}>
+				Purge Database
+			</button>
 		</div>
 	);
 };
