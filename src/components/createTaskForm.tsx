@@ -26,8 +26,6 @@ const CreateTaskForm = ({ addTask }: CreateTaskFormProps) => {
         if (response.ok) {
             addTask(result);  // Pass the new task to the parent component
             setMessage('Task created successfully!');
-            setTitle("");
-            setCompleted(false);
         } else {
             setMessage(`Error: ${result.error}`);
         }
@@ -49,7 +47,7 @@ const CreateTaskForm = ({ addTask }: CreateTaskFormProps) => {
                     />
                 </div>
 
-                <div className="form-check mb-3">
+                {/* <div className="form-check mb-3">
                     <input
                         id="completed"
                         type="checkbox"
@@ -58,7 +56,7 @@ const CreateTaskForm = ({ addTask }: CreateTaskFormProps) => {
                         className="form-check-input"
                     />
                     <label htmlFor="completed" className="form-check-label">Completed</label>
-                </div>
+                </div> */}
 
                 <button type="submit" className="btn btn-primary">
                     Create Task
