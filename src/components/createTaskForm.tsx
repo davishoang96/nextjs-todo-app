@@ -26,6 +26,8 @@ const CreateTaskForm = ({ addTask }: CreateTaskFormProps) => {
         if (response.ok) {
             addTask(result);  // Pass the new task to the parent component
             setMessage('Task created successfully!');
+            setTitle("");
+            setCompleted(false);
         } else {
             setMessage(`Error: ${result.error}`);
         }
