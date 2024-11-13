@@ -10,9 +10,10 @@ interface Task {
 interface ListAllTaskProps {
 	tasks: Task[];
 	onTaskUpdate: (updatedTask: Task) => void;
+	onTaskDelete: (taskId: number) => void; // New prop for task deletion
 }
 
-const ListAllTask = ({ tasks, onTaskUpdate }: ListAllTaskProps) => {
+const ListAllTask = ({ tasks, onTaskUpdate, onTaskDelete }: ListAllTaskProps) => {
 	const [isModalOpen, setModalOpen] = useState(false);
 	const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 	const [title, setTitle] = useState('');
@@ -36,14 +37,30 @@ const ListAllTask = ({ tasks, onTaskUpdate }: ListAllTaskProps) => {
 
 				if (response.ok) {
 					const updatedTask: Task = await response.json();
-					onTaskUpdate(updatedTask); // Pass updated task back to the parent
-					setModalOpen(false); // Close modal after saving
+					onTaskUpdate(updatedTask);
+					setModalOpen(false);
 				} else {
 					console.error('Failed to update task');
 				}
 			} catch (error) {
 				console.error('Error updating task:', error);
 			}
+		}
+	};
+
+	const handleDelete = async (taskId: number) => {
+		try {
+			const response = await fetch(`/api/deleteTask?id=${taskId}`, {
+				method: 'DELETE',
+			});
+
+			if (response.ok) {
+				onTaskDelete(taskId); // Notify parent component of deletion
+			} else {
+				console.error('Failed to delete task');
+			}
+		} catch (error) {
+			console.error('Error deleting task:', error);
 		}
 	};
 
@@ -62,9 +79,14 @@ const ListAllTask = ({ tasks, onTaskUpdate }: ListAllTaskProps) => {
 									{task.completed ? 'Completed' : 'Pending'}
 								</span>
 							</div>
-							<button className="btn btn-sm btn-primary" onClick={() => openModal(task)}>
-								Edit
-							</button>
+							<div>
+								<button className="btn btn-sm btn-primary me-2" onClick={() => openModal(task)}>
+									Edit
+								</button>
+								<button className="btn btn-sm btn-danger" onClick={() => handleDelete(task.id)}>
+									Delete
+								</button>
+							</div>
 						</li>
 					))}
 				</ul>
