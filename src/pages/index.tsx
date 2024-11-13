@@ -47,12 +47,16 @@ const TaskManagement = () => {
 
 	return (
 		<div className="container mt-5">
-			<h1>Task Management</h1>
-			<ListAllTask tasks={tasks} onTaskUpdate={updateTask} onTaskDelete={handleTaskDelete} />
-			<CreateTaskForm addTask={addTask} />
-			<button className="btn btn-danger mt-3" onClick={deleteAllTasks}>
+		  <div className="row justify-content-center">
+			<div className="col-12 col-md-6 col-lg-4">
+			  <h1>Todo</h1>
+			  <ListAllTask tasks={tasks} onTaskUpdate={updateTask} onTaskDelete={handleTaskDelete} />
+			  <CreateTaskForm addTask={addTask} />
+			  <button className="btn btn-danger mt-3" onClick={deleteAllTasks}>
 				Purge Database
-			</button>
+			  </button>
+			</div>
+		  </div>
 		</div>
 	);
 };
